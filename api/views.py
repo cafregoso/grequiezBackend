@@ -1,8 +1,8 @@
-from django.shortcuts import render
+
 from rest_framework import generics, permissions
 from .serializers import BlogSerializer, NewsletterSerializer
-from newsletter.models import Newsletter
 from blog.models import Blog
+from blog.permissions import IsAuthorOrReadOnly
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework.parsers import JSONParser
@@ -15,11 +15,10 @@ from django.contrib.auth import authenticate
 
 class BlogListCreate(generics.ListCreateAPIView):
     serializer_class = BlogSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (IsAuthorOrReadOnly,)
 
-    def get_queryset(self):
-        user = self.request.user
-        return Blog.objects.filter(user=user).order_by('-created')
+    def get_queryset(self): 
+        return Blog.objects.all().order_by('-created')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -27,12 +26,11 @@ class BlogListCreate(generics.ListCreateAPIView):
 
 class BlogRetriveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BlogSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
-        user = self.request.user
-        return Blog.objects.filter(user=user)
-
+        pk = self.kwargs['pk']
+        return Blog.objects.all()
 
 class NewsletterCreate(generics.CreateAPIView):
     serializer_class = NewsletterSerializer

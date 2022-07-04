@@ -32,7 +32,7 @@ class Blog(models.Model):
         auto_now_add = True
     )
 
-    principla_image  = models.ImageField(
+    principal_image  = models.ImageField(
         upload_to = 'blog_images',
         blank = True,
         null = True,
