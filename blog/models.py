@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
+def upload_to(self, filename):
+    return 'blog/{filename}'.format(filename=filename)
+    
 class Blog(models.Model):
     title = models.CharField(
         max_length=150,
@@ -33,19 +37,19 @@ class Blog(models.Model):
     )
 
     principal_image  = models.ImageField(
-        upload_to = 'blog_images',
+        upload_to = upload_to,
         blank = True,
         null = True,
     )
 
     image1 = models.ImageField(
-        upload_to = 'blog_images',
+        upload_to = upload_to,
         blank = True,
         null = True,
     )
 
     image2 = models.ImageField(
-        upload_to = 'blog_images',
+        upload_to = upload_to,
         blank = True,
         null = True,
     )

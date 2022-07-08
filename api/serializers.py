@@ -1,4 +1,3 @@
-from django.db.models.expressions import fields
 from rest_framework import serializers
 from blog.models import Blog
 from newsletter.models import Newsletter
@@ -11,6 +10,9 @@ class UsernameRelated(serializers.RelatedField):
 
 class BlogSerializer(serializers.ModelSerializer):
     user = UsernameRelated(read_only=True)
+    principal_image = serializers.ImageField()
+    image1 = serializers.ImageField(required=False)
+    image2 = serializers.ImageField(required=False)
     class Meta:
         model = Blog
         fields = [
@@ -26,6 +28,7 @@ class BlogSerializer(serializers.ModelSerializer):
             'image2',
             'user',
         ]
+
 
 class NewsletterSerializer(serializers.ModelSerializer):
     class Meta:

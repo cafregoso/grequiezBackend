@@ -1,5 +1,5 @@
 
-from rest_framework import generics, permissions
+from rest_framework import generics
 from .serializers import BlogSerializer, NewsletterSerializer
 from blog.models import Blog
 from blog.permissions import IsAuthorOrReadOnly
@@ -10,11 +10,13 @@ from rest_framework.authtoken.models import Token
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
+from rest_framework.parsers import MultiPartParser, FormParser
 
 # Create your views here.
 
 class BlogListCreate(generics.ListCreateAPIView):
     serializer_class = BlogSerializer
+    parser_classes = (MultiPartParser, FormParser)
     permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self): 
