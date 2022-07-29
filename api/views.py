@@ -1,4 +1,5 @@
 
+from email import message
 from rest_framework import generics
 from .serializers import BlogSerializer, NewsletterSerializer
 from blog.models import Blog
@@ -7,10 +8,12 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 # Create your views here.
 
@@ -31,7 +34,6 @@ class BlogRetriveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
-        pk = self.kwargs['pk']
         return Blog.objects.all()
 
 class NewsletterCreate(generics.CreateAPIView):
@@ -80,3 +82,26 @@ def login(request):
                 { 'token': str(token) },
                 status=201
             )
+
+            
+@csrf_exempt
+def send_email(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        name = data['name']
+        email = data['email']
+        company = data['company']
+        message = data['message']
+        try:
+            send_mail(
+                subject='Persona buscando contacto de gruporequiez.com',
+                message=f'Nombre: {name} \n Correo: {email} \n Mensaje: {message} \n Compañía: {company}',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.RECIPIENT_ADDRESS],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+        return HttpResponse('Mensaje enviado con exito')
+    else:
+        return HttpResponse('Error al enviar el mensaje!')

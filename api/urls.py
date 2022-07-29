@@ -7,4 +7,5 @@ urlpatterns=[
     path('signup-rqz/', views.signup),
     path('login/', views.login),
     path('newsletter/', views.NewsletterCreate.as_view()),
+    path('sendmail/', views.send_email),
 ]

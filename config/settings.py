@@ -15,7 +15,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['atoyacci.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -99,6 +99,9 @@ EMAIL_PORT = config("EMAIL_PORT")
 EMAIL_USE_TLS = True
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+RECIPIENT_ADDRESS = config('RECIPIENT_ADDRESS')
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
